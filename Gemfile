@@ -6,10 +6,10 @@ git_source(:github) do |repo_name|
 end
 
 gem 'rails',        '~> 5.1.3'
-gem 'mysql2'
+
 gem 'sass-rails',   '~> 5.0'
 gem 'uglifier',     '>= 1.3.0'
-gem 'puma'
+
 gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks',   '~> 5'
 gem 'jbuilder',     '~> 2.5'
@@ -24,11 +24,11 @@ gem 'json',               '~> 2.1'
 gem 'rails_real_favicon', '~> 0.0.7'
 gem 'rest-client',        '~> 2.0', '>= 2.0.2'
 gem 'devise-bootstrapped'
-# group :production do
-# gem 'pg'
-# gem 'rails_12factor'
-# gem 'puma'
-# end
+group :production do
+gem 'pg'
+gem 'rails_12factor'
+gem 'puma'
+end
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
