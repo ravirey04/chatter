@@ -1,0 +1,51 @@
+<p id="notice"><%= notice %></p>
+<div id = "roomname" data-roomname = '<%= $room.roomname %>'>
+  <p>
+  <strong>Roomname:</strong>
+  <%= $room.roomname %>
+</p>
+</div>
+<div>
+  <%= text_field_tag :room ,  "https://rtcping.herokuapp.com/rooms/#{$room.slug}" %>
+  <button type="button" id="copy">copy me</button>
+</div>
+
+<h1>Action Cable Signaling Server</h1>
+
+<span id="xirsys-creds" data-xirsys='<%= @json_response.html_safe %>'>
+</span> 
+
+<div>Random User ID:
+  <span id="currentUser" class="badge badge-primary"><%= @random_number %></span>
+</div>
+
+<div id="remoteViewContainer"></div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div id="localViewContainer">
+      <video id="selfView" autoplay></video>
+    </div>
+  </div>
+</div>
+
+<div id="join-btn-container">
+  <button onclick="handleJoinSession()" class="btn btn-success">
+    Join Room
+  </button>
+</div>
+
+<div id="leave-btn-container">
+  <button onclick="handleLeaveSession()" class="btn btn-danger">
+    Leave Room
+  </button>
+</div>
+
+
+
+<% content_for :page_js do %>
+  <script type="text/javascript">
+    <%= render file: "#{Rails.root}/app/views/rooms/js/roomwebrtc.js" %>
+  </script>
+<% end %>
+

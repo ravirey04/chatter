@@ -1,0 +1,40 @@
+<h1>Action Cable Signaling Server</h1>
+
+<span id="xirsys-creds" data-xirsys='<%= @json_response.html_safe %>'>
+</span>
+
+<div>Random User ID:
+  <span id="currentUser" class="badge badge-primary"><%= @random_number %></span>
+</div>
+
+<div id="remoteViewContainer"></div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div id="localViewContainer">
+      <audio id="selfView" autoplay></audio>
+    </div>
+  </div>
+</div>
+
+<div id="join-btn-container">
+  <button onclick="handleJoinSession()" class="btn btn-success">
+    Join Room
+  </button>
+</div>
+
+<div id="leave-btn-container">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<span id="minutes"></span>:<span id="seconds"></span>
+  <button onclick="handleLeaveSession()" class="btn btn-danger">
+    Leave Room
+  </button>
+</div>
+
+
+
+<% content_for :page_js do %>
+  <script type="text/javascript">
+    <%= render file: "#{Rails.root}/app/views/audios/js/webrtc.js" %>
+  </script>
+<% end %>

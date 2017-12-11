@@ -1,0 +1,52 @@
+<%= form_with(model: room, local: true) do |form| %>
+  <% if room.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(room.errors.count, "error") %> prohibited this room from being saved:</h2>
+
+      <ul>
+      <% room.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+  <div id = "displayText"></div>
+
+  <div class="field">
+    <%= form.label :roomname %>
+    <%= form.text_field :roomname, id: :room_roomname %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
+
+
+<% content_for :page_js do %>
+  <script type="text/javascript">
+
+  var inputBox = document.getElementById('room_roomname');
+
+  inputBox.onkeyup = function(){
+    
+    inputText()
+}
+
+function inputText() {
+  if (inputBox.value === "") {
+
+    document.getElementById('displayText').innerHTML = "";
+  }
+
+  else {
+    inputBox.value=inputBox.value.replace(/ /g,"-");
+
+    document.getElementById('displayText').innerHTML = "https://rtcping.herokuapp.com/rooms/"+ inputBox.value;
+  }
+}
+  </script>
+<% end %>
