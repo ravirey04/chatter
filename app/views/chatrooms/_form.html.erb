@@ -1,4 +1,4 @@
-<%= form_with(model: chatroom, local: true) do |form| %>
+<%= form_for(chatroom) do |f| %>
   <% if chatroom.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(chatroom.errors.count, "error") %> prohibited this chatroom from being saved:</h2>
@@ -12,11 +12,11 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name, id: :chatroom_name %>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= f.submit %>
   </div>
 <% end %>
