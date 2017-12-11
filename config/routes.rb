@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   devise_for :users
   root 'chatrooms#index'
   get 'audio'=> "audios#home"
-get "page" => "pages#home"
-get "ping" => "pings#home"
+  get "page" => "pages#home"
+  get "ping" => "pings#home"
  resources :assigns
  resources :pings
  resources :periods
