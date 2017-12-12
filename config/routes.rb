@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resources :rooms
   #get 'pings/home'
-  post 'assigns/create'
+  #post 'assigns/create'
   post 'rooms/sessions'
   resources :chatrooms do 
   		resource :chatroom_users

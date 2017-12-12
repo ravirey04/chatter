@@ -2,47 +2,85 @@
 const JOIN_ROOM = "JOIN_ROOM";
 const EXCHANGE = "EXCHANGE";
 const REMOVE_USER = "REMOVE_USER";
-
+const roomTextbox = document.getElementById("room")
+const copyButton = document.getElementById("copy")
 // DOM ELEMENTS
 const currentUser = document.getElementById("currentUser").innerHTML;
 const selfView = document.getElementById("selfView");
 const remoteViewContainer = document.getElementById("remoteViewContainer");
 const joinBtnContainer = document.getElementById("join-btn-container");
 const leaveBtnContainer = document.getElementById("leave-btn-container");
-
 // CONFIG
+
 // const ice = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+
+// display
+
+
+
+// copy text
+
+copyButton.addEventListener("click", function(e) {
+  e.preventDefault();
+var copied;
+roomTextbox.select();
+
+  try {
+    copied = document.execCommand("copy");
+  } catch (e) {
+    copied = false;
+  }
+
+  if (copied) {
+    copyButton.innerHTML = "Saved to Clipboard!"
+  }
+
+
+
+});
+
+
 let xirsysIceCreds = JSON.parse(
   document.getElementById("xirsys-creds").dataset.xirsys
 );
 xirsysIceCreds = JSON.parse(xirsysIceCreds)["v"];
 
 const constraints = {
-  audio: true 
+  audio: false,
+  video: true
 };
 
 // GLOBAL OBJECTS
 let pcPeers = {};
 let localStream;
-
+let roomName = document.getElementById("roomname").dataset.roomname;
 // Window Events
 window.onload = () => {
   initialize();
+  //alert(roomName);
 };
 
 const initialize = () => {
-  navigator.mediaDevices
-    .getUserMedia(constraints)
-    .then(stream => {
-      localStream = stream;
+navigator.getUserMedia = navigator.getUserMedia ||
+    navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+
+function successCallback(stream) {
+  localStream = stream;
       selfView.srcObject = stream;
       selfView.muted = true;
-    })
-    .catch(logError);
+}
+
+function errorCallback(error) {
+  console.log('navigator.getUserMedia error: ', error);
+}
+
+navigator.getUserMedia(constraints, successCallback, errorCallback);
 };
 
 const handleJoinSession = async () => {
-  App.session = await App.cable.subscriptions.create("SessionChannel", {
+  App.session = await App.cable.subscriptions.create( {
+    channel:"DummyChannel", id: roomName}, {
     connected: () => connectUser(currentUser),
     received: data => {
       console.log("received", data);
@@ -77,7 +115,8 @@ const handleLeaveSession = () => {
 
   broadcastData({
     type: REMOVE_USER,
-    from: currentUser
+    from: currentUser,
+    roomName
   });
 
   joinBtnContainer.style.display = "block";
@@ -87,7 +126,8 @@ const handleLeaveSession = () => {
 const connectUser = userId => {
   broadcastData({
     type: JOIN_ROOM,
-    from: currentUser
+    from: currentUser,
+    roomName
   });
 };
 
@@ -116,7 +156,8 @@ const createPC = (userId, isOffer) => {
           type: EXCHANGE,
           from: currentUser,
           to: userId,
-          sdp: JSON.stringify(pc.localDescription)
+          sdp: JSON.stringify(pc.localDescription),
+    roomName
         });
       })
       .catch(logError);
@@ -127,12 +168,13 @@ const createPC = (userId, isOffer) => {
         type: EXCHANGE,
         from: currentUser,
         to: userId,
-        candidate: JSON.stringify(event.candidate)
+        candidate: JSON.stringify(event.candidate),
+    roomName
       });
   };
 
   pc.onaddstream = event => {
-    const element = document.createElement("audio");
+    const element = document.createElement("video");
     element.id = `remoteView+${userId}`;
     element.autoplay = "autoplay";
     element.srcObject = event.stream;
@@ -144,7 +186,8 @@ const createPC = (userId, isOffer) => {
       console.log("Disconnected:", userId);
       broadcastData({
         type: REMOVE_USER,
-        from: userId
+        from: userId,
+    roomName
       });
     }
   };
@@ -180,7 +223,8 @@ const exchange = data => {
               type: EXCHANGE,
               from: currentUser,
               to: data.from,
-              sdp: JSON.stringify(pc.localDescription)
+              sdp: JSON.stringify(pc.localDescription),
+    roomName
             });
           });
         }
@@ -191,18 +235,10 @@ const exchange = data => {
 
 const broadcastData = data => {
   $.ajax({
-    url: "assigns",
+    url: "sessions",
     type: "post",
     data
   });
 };
 
 const logError = error => console.warn("Whoops! Error:", error);
-
-
-// var sec = 0;
-// function pad ( val ) { return val >9 ? val : "0" +val; }
-// setInterval ( function(){
-// $("#seconds").html(pad(++sec%60));
-// $("#minutes").html(pad(parseInt(sec/60,10)));
-// },1000);

@@ -20,7 +20,7 @@ App.chatrooms = App.cable.subscriptions.create("ChatroomsChannel", {
         App.last_read.update(data.chatroom_id);
       }
       // Insert the message
-      return active_chatroom.append("div><strong>${data.username}:</strong> ${data.body}</div>");
+      return active_chatroom.append("<div><strong>${data.username}:</strong> ${data.body}</div>");
     } else {
       return $("[data-behavior='chatroom-link'][data-chatroom-id='${data.chatroom_id}']").css("font-weight", "bold","red");
     }
