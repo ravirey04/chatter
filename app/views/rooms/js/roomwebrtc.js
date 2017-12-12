@@ -79,7 +79,7 @@ navigator.getUserMedia(constraints, successCallback, errorCallback);
 };
 
 const handleJoinSession = async () => {
-  App.session = await App.cable.subscriptions.create( {
+  App.dummy = await App.cable.subscriptions.create( {
     channel:"DummyChannel", id: roomName}, {
     connected: () => connectUser(currentUser),
     received: data => {
